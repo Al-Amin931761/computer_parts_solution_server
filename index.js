@@ -82,6 +82,37 @@ async function run() {
             const result = await userCollection.updateOne(filter, updateDoc, options);
             const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
             res.send({ result, token });
+        });
+
+        app.get('/allusers', verifyToken, async (req, res) => {
+            const query = {};
+            const cursor = userCollection.find(query);
+            const users = await cursor.toArray();
+            res.send(users);
+        });
+
+        // make admin
+        app.put('/user/admin/:email', verifyToken, async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email };
+            const requester = req.decoded.email;
+            const requesterAccount = await userCollection.findOne({ email: requester });
+            if (requesterAccount.role === 'admin') {
+                const updateDoc = {
+                    $set: { role: 'admin' },
+                };
+                const result = await userCollection.updateOne(filter, updateDoc);
+                res.send(result);
+            }
+            else {
+                res.status(403).send({ message: '403 - Forbidden access' });
+            }
+        });
+        app.get('/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = await userCollection.findOne({ email: email });
+            const isAdmin = user.role === 'admin';
+            res.send({ admin: isAdmin });
         })
 
     }
