@@ -32,6 +32,7 @@ async function run() {
         const partsCollection = client.db('computer_parts').collection('parts');
         const bookingCollection = client.db('computer_parts').collection('booking');
         const userCollection = client.db('computer_parts').collection('users');
+        const reviewCollection = client.db('computer_parts').collection('review');
 
 
         // all parts data load
@@ -54,6 +55,21 @@ async function run() {
         app.post("/booking", async (req, res) => {
             const booking = req.body;
             const result = await bookingCollection.insertOne(booking);
+            res.send(result);
+        });
+
+        // post review
+        app.post("/review", async (req, res) => {
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review);
+            res.send(result);
+        })
+
+        // get review
+        app.get('/review', async (req, res) => {
+            const query = {};
+            const cursor = reviewCollection.find(query);
+            const result = await cursor.toArray();
             res.send(result);
         });
 
