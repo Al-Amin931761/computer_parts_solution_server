@@ -33,6 +33,7 @@ async function run() {
         const bookingCollection = client.db('computer_parts').collection('booking');
         const userCollection = client.db('computer_parts').collection('users');
 
+
         // all parts data load
         app.get('/parts', async (req, res) => {
             const query = {};
@@ -49,7 +50,7 @@ async function run() {
             res.send(part);
         });
 
-        // booked all data load 
+        // post single data 
         app.post("/booking", async (req, res) => {
             const booking = req.body;
             const result = await bookingCollection.insertOne(booking);
@@ -113,7 +114,14 @@ async function run() {
             const user = await userCollection.findOne({ email: email });
             const isAdmin = user.role === 'admin';
             res.send({ admin: isAdmin });
-        })
+        });
+
+        // add new product 
+        app.post("/parts", async (req, res) => {
+            const newProduct = req.body;
+            const result = await partsCollection.insertOne(newProduct);
+            res.send(result);
+        });
 
     }
     finally {
