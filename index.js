@@ -51,6 +51,20 @@ async function run() {
             res.send(part);
         });
 
+        app.put('/parts/:id', async (req, res) => {
+            const id = req.params.id;
+            const updateData = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: updateData
+
+
+            };
+            const result = await partsCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        });
+
         // post single data 
         app.post("/booking", async (req, res) => {
             const booking = req.body;
