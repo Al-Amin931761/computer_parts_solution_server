@@ -34,6 +34,14 @@ async function run() {
         const userCollection = client.db('computer_parts').collection('users');
         const reviewCollection = client.db('computer_parts').collection('review');
 
+        // load all bookings 
+        app.get('/bookings', async (req, res) => {
+            const query = {};
+            const cursor = bookingCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
 
         // all parts data load
         app.get('/parts', async (req, res) => {
@@ -141,7 +149,6 @@ async function run() {
             const result = await userCollection.find(query).toArray();
             res.send(result);
         });
-
 
 
         app.get('/allusers', verifyToken, async (req, res) => {
