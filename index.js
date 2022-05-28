@@ -51,6 +51,14 @@ async function run() {
             res.send(part);
         });
 
+        // delete parts 
+        app.delete('/parts/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await partsCollection.deleteOne(query);
+            res.send(result);
+        })
+
         app.put('/parts/:id', async (req, res) => {
             const id = req.params.id;
             const updateData = req.body;
