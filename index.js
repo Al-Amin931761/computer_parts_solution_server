@@ -115,6 +115,27 @@ async function run() {
             res.send({ result, token });
         });
 
+        // update profile 
+        app.put('/user/:email', async (req, res) => {
+            const info = req.body;
+            const email = req.params.email;
+            const filter = { email: email };
+            const updateDoc = {
+                $set: info,
+            };
+            const result = await userCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        });
+
+        app.get('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email }
+            const result = await userCollection.find(query).toArray();
+            res.send(result);
+        });
+
+
+
         app.get('/allusers', verifyToken, async (req, res) => {
             const query = {};
             const cursor = userCollection.find(query);
