@@ -74,8 +74,6 @@ async function run() {
             const options = { upsert: true };
             const updatedDoc = {
                 $set: updateData
-
-
             };
             const result = await partsCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
@@ -131,18 +129,6 @@ async function run() {
             res.send({ result, token });
         });
 
-        // update profile 
-        app.put('/user/:email', async (req, res) => {
-            const info = req.body;
-            const email = req.params.email;
-            const filter = { email: email };
-            const updateDoc = {
-                $set: info,
-            };
-            const result = await userCollection.updateOne(filter, updateDoc);
-            res.send(result);
-        });
-
         app.get('/user/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email: email }
@@ -150,7 +136,7 @@ async function run() {
             res.send(result);
         });
 
-
+        // get all users data 
         app.get('/allusers', verifyToken, async (req, res) => {
             const query = {};
             const cursor = userCollection.find(query);
@@ -180,6 +166,18 @@ async function run() {
             const user = await userCollection.findOne({ email: email });
             const isAdmin = user.role === 'admin';
             res.send({ admin: isAdmin });
+        });
+
+        // update profile 
+        app.put('/user/:email', async (req, res) => {
+            const info = req.body;
+            const email = req.params.email;
+            const filter = { email: email };
+            const updateDoc = {
+                $set: info,
+            };
+            const result = await userCollection.updateOne(filter, updateDoc);
+            res.send(result);
         });
 
         // add new product 
